@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>register</title>
+</head>
+
+<body>
+    <div class="register-box">
+        <h2>Inscription</h2>
+        <input type="text" id="nom" placeholder="Nom">
+        <input type="password" id="password" placeholder="Mot de passe">
+        <button onclick="login()">Se connecter</button>
+    </div>
+    <script>
+        async function login() {
+            const nom = document.getElementById("nom").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ nom, password })
+            });
+
+            const data = await response.json();
+            alert(data.message);
+        }
+    </script>
+    <link rel="script" href="../script/register.js">
+</body>
+
+</html>
