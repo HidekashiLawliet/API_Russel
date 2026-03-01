@@ -81,6 +81,7 @@ app.put('/cateway/:id', auth, async (req, res) => {
         const id = req.params.id;
         const updateData = req.body;
         const updatedCateway = await Cateway.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
+        console.log('Updated Cateway:', updatedCateway);
         if (!updatedCateway) {
             return res.status(404).json({ message: 'Not found' });
         }

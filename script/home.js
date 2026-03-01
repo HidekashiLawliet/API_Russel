@@ -3,24 +3,27 @@ const reservationPart = document.getElementById('reservations-list');
 
 
 async function openChangeForm(id) {
-    const res = await fetch('/cateways');
-    if (!res.ok) throw new Error('Network response was not ok');
-    const items = await res.json();
     console.log('Open change form for catway ID:', id);
-    const box = document.createElement('div');
-    box.className = "changeForm";
     const title = document.createElement('p');
-    title.textContent = `Change Cateway id: ${id}:`;
+    const box = document.createElement('form');
     const catewayNumInput = document.createElement('input');
-    catewayNumInput.placeholder = 'New Number';
     const catewayTypeInput = document.createElement('input');
-    catewayTypeInput.placeholder = 'New Type';
     const catewayStateInput = document.createElement('input');
-    catewayStateInput.placeholder = 'New State';
     const saveButton = document.createElement('button');
+
+
+    box.className = "changeForm";
+    title.textContent = `Change Cateway id: ${id}:`;
+    catewayNumInput.placeholder = 'New Number';
+    catewayTypeInput.placeholder = 'New Type';
+    catewayStateInput.placeholder = 'New State';
     saveButton.textContent = 'Save Changes';
     saveButton.addEventListener('click', () => {
         console.log('Save changes for catway ID:', id);
+
+        setTimeout(() => {
+            console.log("Waited 3 seconds!");
+        }, 15000);
 
         const updatedData = {
             catwayNumber: catewayNumInput.value,
@@ -28,13 +31,15 @@ async function openChangeForm(id) {
             catwayState: catewayStateInput.value
         };
 
+
+
         console.log('Updated data: ', updatedData)
         fetch(`/cateway/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSONupdatedData
+            body: JSON.stringify(updatedData)
         })
     });
 
