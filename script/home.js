@@ -3,6 +3,9 @@ const reservationPart = document.getElementById('reservations-list');
 
 
 async function openChangeForm(id) {
+    const res = await fetch('/cateways');
+    if (!res.ok) throw new Error('Network response was not ok');
+    const items = await res.json();
     console.log('Open change form for catway ID:', id);
     const box = document.createElement('div');
     box.className = "changeForm";
@@ -31,7 +34,7 @@ async function openChangeForm(id) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(updatedData)
+            body: JSONupdatedData
         })
     });
 
