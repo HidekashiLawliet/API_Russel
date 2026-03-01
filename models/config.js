@@ -1,5 +1,6 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
-
+const connect = mongoose.connect(process.env.MONGO_URI);
 // Check database connected or not
 connect.then(() => {
     console.log("Database Connected Successfully on port: ", mongoose.connection.port);
