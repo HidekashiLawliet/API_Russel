@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+    </head>
+    <body>
+        <h1 id="title">Welcome to Home Page</h1>
+        <button onclick="window.location.href='/logout'">Logout</button>
+        <h2>Welcome, chose your file to upload</h2>
+
+        <section>
+            <section>
+                <h3>List of cateways</h3>
+                <div id="cateways-list" method="GET" action="/cateways">
+                </div>
+            </section>
+            <section>
+                <h3>List of reservation</h3>
+                <div id="reservations-list" method="GET" action="/reservations">
+                </div>
+            </section>
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+                <div id="catways-list">
+                    <div id="catways-box">
+                        <input type="file" name="image">
+                        <button type="submit">Upload</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+        <script src="/script/home.js" type="text/javascript" defer></script>
+    </body>
+</html>

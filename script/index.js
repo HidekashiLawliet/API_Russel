@@ -1,27 +1,24 @@
 const express = require("express");
-const collection = require("./models/config");
+const collection = require("../models/config");
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const app = express();
 const multer = require('multer');
-const mongoose = require('mongoose');
-const Cateway = require('./models/cateway');
-const Reservation = require('./models/reservation');
-const FileSchema = new mongoose.Schema({
-    filename: String,
-    contentType: String,
-    data: Buffer,
-    uploadedAt: { type: Date, default: Date.now }
-});
-const File = mongoose.model('File', FileSchema, 'files');
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, '../images');
+    },
+    filename: (req, file, callback) => {
+        callback(null, Date.now() + (file.name));
+    }
+})
+const upload = multer({ storage: storage })
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static("public"));
-app.use('/script', express.static(path.join(__dirname, 'script')));
 app.use(express.urlencoded({ extended: false }));
 
 
@@ -39,23 +36,8 @@ app.get('/upload', (req, res) => {
     res.render("../pages/upload",);
 });
 
-
 app.post('/upload', upload.single('image'), async (req, res) => {
-    try {
-        const file = req.file;
-        if (!file) return res.status(400).send('No file uploaded');
-        // create a document and save buffer to DB
-        const Images = new File({
-            filename: file.originalname,
-            contentType: file.mimetype,
-            data: file.buffer
-        });
-        await Images.save();
-        res.redirect('/home');
-    } catch (err) {
-        console.error('Upload error', err);
-        res.status(500).send('Error saving file');
-    }
+    res.send('File uploaded successfully');
 });
 
 function auth(req, res, next) {
@@ -69,48 +51,6 @@ function auth(req, res, next) {
 app.get('/home', auth, (req, res) => {
     const username = req.cookies.username || '';
     res.render("../pages/home", { username });
-});
-
-app.use((req, res, next) => {
-    console.log(req.method, req.url);
-    next();
-});
-
-app.put('/cateway/:id', auth, async (req, res) => {
-    try {
-        const id = req.params.id;
-        const updateData = req.body;
-        const updatedCateway = await Cateway.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
-        if (!updatedCateway) {
-            return res.status(404).json({ message: 'Not found' });
-        }
-        res.json(updatedCateway);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Unable to update' });
-    }
-});
-
-
-// endpoint to return all cateway documents as JSON
-app.get('/cateways', auth, async (req, res) => {
-    try {
-        const items = await Cateway.find({}).lean();
-        res.json(items);
-    } catch (err) {
-        console.error('Error fetching cateways', err);
-        res.status(500).json({ error: 'Unable to load cateways' });
-    }
-});
-
-app.get('/reservations', auth, async (req, res) => {
-    try {
-        const items = await Reservation.find({}).lean();
-        res.json(items);
-    } catch (err) {
-        console.error('Error fetching reservations', err);
-        res.status(500).json({ error: 'Unable to load reservations' });
-    }
 });
 
 app.post("/signup", async (req, res) => {
