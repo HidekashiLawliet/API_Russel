@@ -159,6 +159,16 @@ app.get('/logout', (req, res) => {
 
 
 const port = 8080;
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
-});
+async function startServer() {
+    try {
+        await collection.connectToDatabase();
+        app.listen(port, () => {
+            console.log(`Server listening on port ${port}`);
+        });
+    } catch (error) {
+        console.error('Startup failed:', error.message);
+        process.exit(1);
+    }
+}
+
+startServer();
