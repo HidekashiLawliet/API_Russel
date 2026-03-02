@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const reservationSchema = new mongoose.Schema({
-    _id: String,
-    catewayId: String,
+    _id: Number,
+    catwayNumber: Number,
     clientName: String,
     boatName: String,
     startDate: String,

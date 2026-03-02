@@ -91,6 +91,42 @@ app.delete('/cateway/delete/:id', auth, async (req, res) => {
     }
 });
 
+app.put('/catway/:catwayNumber/reservations/:reservationId', auth, async (req, res) => {
+    try {
+        const catwayNumber = req.params.catwayNumber;
+        const reservationId = req.params.reservationId;
+        const updateData = req.body;
+
+        // Supposer que Reservation est un modèle Mongoose pour les réservations
+        const updatedReservation = await Reservation.findByIdAndUpdate(reservationId, updateData, { new: true });
+
+        if (!updatedReservation) {
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
+
+        res.json(updatedReservation);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Unable to update reservation' });
+    }
+});
+
+app.delete('/catway/:catwayNumber/reservations/:reservationId', auth, async (req, res) => {
+    const { catwayNumber } = req.params;
+    try {
+        const deletedReservation = await Reservation.findOneAndDelete({
+            catwayNumber: catwayNumber,
+        });
+        if (!deletedReservation) {
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
+        res.json({ message: 'Reservation deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting reservation:', err);
+        res.status(500).json({ error: 'Unable to delete reservation' });
+    }
+});
+
 app.put('/cateway/:id', auth, async (req, res) => {
     try {
         const id = req.params.id;
@@ -131,9 +167,16 @@ app.get('/cateways', auth, async (req, res) => {
     }
 });
 
-app.get('/reservations', auth, async (req, res) => {
+
+app.get('/catways/:id/reservations', auth, async (req, res) => {
     try {
-        const items = await Reservation.find({}).lean();
+        const catwayId = req.params.id;
+
+        const catway = await Cateway.findById(catwayId);
+        if (!catway) {
+            return res.status(404).json({ error: 'Catway not found' });
+        }
+        const items = await Reservation.find({ catwayNumber: catway.catwayNumber }).lean();
         res.json(items);
     } catch (err) {
         console.error('Error fetching reservations', err);
@@ -183,8 +226,6 @@ app.get('/logout', (req, res) => {
     res.clearCookie('username');
     res.redirect('/');
 });
-
-
 const port = 8080;
 async function startServer() {
     try {
@@ -197,5 +238,4 @@ async function startServer() {
         process.exit(1);
     }
 }
-
 startServer();

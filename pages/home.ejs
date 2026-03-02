@@ -11,17 +11,23 @@
         <h2>Welcome, chose your file to upload</h2>
 
         <section>
-            <section>
+            <h3>Affichage</h3>
+            <select id="viewSelect" onchange="handleChange(this)">
+                <option value="cateways">Cateways</option>
+                <option value="reservations">Reservations</option>
+            </select>
+
+            <section id="catewaysSection">
                 <h3>List of cateways</h3>
-                <div id="cateways-list" method="GET" action="/cateways">
-                </div>
+                <div id="cateways-list"></div>
                 <button id="createCatwayButton" onclick="createNewCatway()">Create New Catway</button>
             </section>
-            <section>
-                <h3>List of reservation</h3>
-                <div id="reservations-list" method="GET" action="/reservations">
-                </div>
+
+            <section id="reservationsSection" style="display:none;">
+                <h3>List of reservations</h3>
+                <div id="reservations-list"></div>
             </section>
+
             <form method="POST" action="/upload" enctype="multipart/form-data">
                 <div id="catways-list">
                     <div id="catways-box">
@@ -31,6 +37,7 @@
                 </div>
             </form>
         </section>
+
         <script src="../script/home.js" type="text/javascript" defer></script>
     </body>
 </html>

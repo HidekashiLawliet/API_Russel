@@ -4,7 +4,7 @@ const CatwaySchema = new mongoose.Schema({
     catwayNumber: Number,
     catwayType: String,
     catwayState: String
-}, { strict: true });
+}, { strict: false });
 
 module.exports = mongoose.model('catawayDB', CatwaySchema, 'catawayDB');
 
