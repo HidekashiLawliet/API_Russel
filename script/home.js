@@ -5,12 +5,11 @@ const reservationPart = document.getElementById('reservations-list');
 async function openChangeForm(id) {
     console.log('Open change form for catway ID:', id);
     const title = document.createElement('p');
-    const box = document.createElement('form');
+    const box = document.createElement('div');
     const catewayNumInput = document.createElement('input');
     const catewayTypeInput = document.createElement('input');
     const catewayStateInput = document.createElement('input');
     const saveButton = document.createElement('button');
-
 
     box.className = "changeForm";
     title.textContent = `Change Cateway id: ${id}:`;
@@ -30,8 +29,6 @@ async function openChangeForm(id) {
             catwayType: catewayTypeInput.value,
             catwayState: catewayStateInput.value
         };
-
-
 
         console.log('Updated data: ', updatedData)
         fetch(`/cateway/${id}`, {
