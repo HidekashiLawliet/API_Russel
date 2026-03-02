@@ -111,6 +111,15 @@ app.put('/cateway/:id', auth, async (req, res) => {
 
 });
 
+app.post('/cateway/create', auth, async (req, res) => {
+    try {
+        const createCateway = await Cateway.create(req.body);
+        res.status(201).json(createCateway);
+    } catch (err) {
+        console.error('Error creating catway:', err);
+        res.status(500).json({ error: 'Unable to create catway' });
+    }
+})
 
 app.get('/cateways', auth, async (req, res) => {
     try {

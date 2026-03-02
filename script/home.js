@@ -2,58 +2,25 @@ const listPart = document.getElementById('cateways-list');
 const reservationPart = document.getElementById('reservations-list');
 
 
-async function openChangeForm(id) {
-    console.log('Open change form for catway ID:', id);
-    const title = document.createElement('p');
-    const box = document.createElement('div');
-    const catewayStateInput = document.createElement('input');
-    const saveButton = document.createElement('button');
+// async function openChangeForm(id) {
+//     const title = document.createElement('p');
+//     const box = document.createElement('div');
+//     const catewayStateInput = document.createElement('input');
 
-    box.className = "changeForm";
-    title.textContent = `Change Cateway state: ${id}:`;
-    catewayStateInput.placeholder = 'New State';
-    saveButton.textContent = 'Save Changes';
-    saveButton.addEventListener('click', () => {
-        console.log('Save changes for catway ID:', id);
-        const updatedData = {
-            catwayState: catewayStateInput.value
-        };
-
-        console.log('Updated data: ', updatedData)
-        fetch(`/cateway/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedData)
-
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data if needed
-                console.log('Update successful:', data);
-                // Reload the page
-                location.reload();
-            })
-            .catch(error => {
-                console.error('Error updating cateway:', error);
-            });
-
-    });
-
-    box.appendChild(title);
-    box.appendChild(catewayStateInput);
-    box.appendChild(saveButton);
-
-    document.body.appendChild(box); // Append the form to the body or a specific container
-}
+//     box.className = "changeForm";
+//     title.textContent = `Change Cateway state: ${id}:`;
+//     catewayStateInput.placeholder = 'New State';
+//     saveButton.textContent = 'Save Changes';
 
 
-async function createCateway() {
 
 
-}
+//     box.appendChild(title);
+//     box.appendChild(catewayStateInput);
+//     box.appendChild(saveButton);
 
+//     document.body.appendChild(box); // Append the form to the body or a specific container
+// }
 
 async function loadCateways() {
     try {
@@ -73,12 +40,37 @@ async function loadCateways() {
             catewayType.textContent = `Type: ${item.catwayType}`;
             const catewayState = document.createElement('p');
             catewayState.textContent = `State: ${item.catwayState}`;
+
             const changeButton = document.createElement('button');
             changeButton.textContent = 'Change catway';
             changeButton.className = "changeButton";
             changeButton.addEventListener('click', () => {
-                openChangeForm(id);
-            })
+                console.log('Save changes for catway ID:', id);
+                const updatedData = {
+                    catwayState: prompt('Enter new catway state:')
+                };
+
+                console.log('Updated data: ', updatedData)
+                fetch(`/cateway/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response data if needed
+                        console.log('Update successful:', data);
+                        // Reload the page
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error updating cateway:', error);
+                    });
+
+            });
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete catway';
             deleteButton.className = "deleteButton";
@@ -98,7 +90,6 @@ async function loadCateways() {
                 }
             });
 
-
             box.appendChild(title);
             box.appendChild(catewayNum);
             box.appendChild(catewayType);
@@ -107,12 +98,38 @@ async function loadCateways() {
             box.appendChild(deleteButton);
             listPart.appendChild(box);
         });
+
     } catch (err) {
         console.error('Failed to load cateways', err);
         listPart.textContent = 'Error loading data';
     }
 }
 loadCateways();
+
+createNewCatway = () => {
+    const newCatewayData = {
+        catwayNumber: prompt('Enter catway number:'),
+        catwayType: prompt('Enter catway type:'),
+        catwayState: prompt('Enter catway state:')
+    };
+
+    fetch('/cateway/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newCatewayData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Cateway created successfully:', data);
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error creating catway:', error);
+        });
+};
+
 
 async function loadReservations() {
     try {
