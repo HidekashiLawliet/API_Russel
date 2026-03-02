@@ -6,27 +6,16 @@ async function openChangeForm(id) {
     console.log('Open change form for catway ID:', id);
     const title = document.createElement('p');
     const box = document.createElement('div');
-    const catewayNumInput = document.createElement('input');
-    const catewayTypeInput = document.createElement('input');
     const catewayStateInput = document.createElement('input');
     const saveButton = document.createElement('button');
 
     box.className = "changeForm";
-    title.textContent = `Change Cateway id: ${id}:`;
-    catewayNumInput.placeholder = 'New Number';
-    catewayTypeInput.placeholder = 'New Type';
+    title.textContent = `Change Cateway state: ${id}:`;
     catewayStateInput.placeholder = 'New State';
     saveButton.textContent = 'Save Changes';
     saveButton.addEventListener('click', () => {
         console.log('Save changes for catway ID:', id);
-
-        setTimeout(() => {
-            console.log("Waited 3 seconds!");
-        }, 15000);
-
         const updatedData = {
-            catwayNumber: catewayNumInput.value,
-            catwayType: catewayTypeInput.value,
             catwayState: catewayStateInput.value
         };
 
@@ -37,12 +26,22 @@ async function openChangeForm(id) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(updatedData)
+
         })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data if needed
+                console.log('Update successful:', data);
+                // Reload the page
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error updating cateway:', error);
+            });
+
     });
 
     box.appendChild(title);
-    box.appendChild(catewayNumInput);
-    box.appendChild(catewayTypeInput);
     box.appendChild(catewayStateInput);
     box.appendChild(saveButton);
 

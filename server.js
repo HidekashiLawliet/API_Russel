@@ -8,6 +8,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const Cateway = require('./models/cateway');
 const Reservation = require('./models/reservation');
+const { exit } = require("process");
 const FileSchema = new mongoose.Schema({
     filename: String,
     contentType: String,
@@ -80,6 +81,9 @@ app.put('/cateway/:id', auth, async (req, res) => {
     try {
         const id = req.params.id;
         const updateData = req.body;
+        if (updateData.catwayState === undefined || updateData.catwayState === "" || updateData.catwayState === null) {
+            return res.status(400).json({ error: 'catwayState is required' });
+        }
         const updatedCateway = await Cateway.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
         console.log('Updated Cateway:', updatedCateway);
         if (!updatedCateway) {
@@ -90,10 +94,10 @@ app.put('/cateway/:id', auth, async (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Unable to update' });
     }
+
 });
 
 
-// endpoint to return all cateway documents as JSON
 app.get('/cateways', auth, async (req, res) => {
     try {
         const items = await Cateway.find({}).lean();
