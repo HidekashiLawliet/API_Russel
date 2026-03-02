@@ -1,27 +1,6 @@
 const listPart = document.getElementById('cateways-list');
 const reservationPart = document.getElementById('reservations-list');
 
-
-// async function openChangeForm(id) {
-//     const title = document.createElement('p');
-//     const box = document.createElement('div');
-//     const catewayStateInput = document.createElement('input');
-
-//     box.className = "changeForm";
-//     title.textContent = `Change Cateway state: ${id}:`;
-//     catewayStateInput.placeholder = 'New State';
-//     saveButton.textContent = 'Save Changes';
-
-
-
-
-//     box.appendChild(title);
-//     box.appendChild(catewayStateInput);
-//     box.appendChild(saveButton);
-
-//     document.body.appendChild(box); // Append the form to the body or a specific container
-// }
-
 async function loadCateways() {
     try {
         const res = await fetch('/cateways');
