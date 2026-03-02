@@ -199,11 +199,12 @@ async function loadReservations() {
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ clientName: newClientName },
-                                { boatName: newBoatName },
-                                { startDate: newStartDate },
-                                { endDate: newEndDate }
-                            )
+                            body: JSON.stringify({
+                                clientName: newClientName,
+                                boatName: newBoatName,
+                                startDate: newStartDate,
+                                endDate: newEndDate
+                            })
                         });
                         if (!response.ok) {
                             throw new Error('Failed to update reservation');

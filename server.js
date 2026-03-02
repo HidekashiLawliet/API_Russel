@@ -92,21 +92,29 @@ app.delete('/cateway/delete/:id', auth, async (req, res) => {
 });
 
 app.put('/catway/:catwayNumber/reservations/:reservationId', auth, async (req, res) => {
+    const { catwayNumber } = req.params;
+    const { clientName, boatName, startDate, endDate } = req.body;
+
+    // validation minimale
+    if (!clientName && !boatName && !startDate && !endDate) {
+        return res.status(400).json({ error: 'Au moins un champ à mettre à jour est requis' });
+    }
+    console.log('Received update data:', req.body);
+    const update = {};
+    if (clientName !== undefined) update.clientName = clientName;
+    if (boatName !== undefined) update.boatName = boatName;
+    if (startDate !== undefined) update.startDate = startDate;
+    if (endDate !== undefined) update.endDate = endDate;
     try {
-        const catwayNumber = req.params.catwayNumber;
-        const reservationId = req.params.reservationId;
-        const updateData = req.body;
-
-        // Supposer que Reservation est un modèle Mongoose pour les réservations
-        const updatedReservation = await Reservation.findByIdAndUpdate(reservationId, updateData, { new: true });
-
-        if (!updatedReservation) {
-            return res.status(404).json({ message: 'Reservation not found' });
-        }
-
-        res.json(updatedReservation);
+        const updated = await Reservation.findOneAndUpdate(
+            { catwayNumber: catwayNumber },
+            update,
+            { new: true }
+        );
+        if (!updated) return res.status(404).json({ message: 'Reservation not found' });
+        res.json(updated);
     } catch (err) {
-        console.error(err);
+        console.error('Error updating reservation:', err);
         res.status(500).json({ error: 'Unable to update reservation' });
     }
 });
