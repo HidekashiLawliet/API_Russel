@@ -48,6 +48,13 @@ async function openChangeForm(id) {
     document.body.appendChild(box); // Append the form to the body or a specific container
 }
 
+
+async function createCateway() {
+
+
+}
+
+
 async function loadCateways() {
     try {
         const res = await fetch('/cateways');
@@ -72,6 +79,24 @@ async function loadCateways() {
             changeButton.addEventListener('click', () => {
                 openChangeForm(id);
             })
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete catway';
+            deleteButton.className = "deleteButton";
+            deleteButton.addEventListener('click', async () => {
+                if (confirm("Are you sure you want to delete this catway?")) {
+                    try {
+                        const response = await fetch(`/cateway/delete/${id}`, {
+                            method: 'DELETE'
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to delete catway');
+                        }
+                        location.reload();
+                    } catch (error) {
+                        console.error('Error deleting catway:', error);
+                    }
+                }
+            });
 
 
             box.appendChild(title);
@@ -79,6 +104,7 @@ async function loadCateways() {
             box.appendChild(catewayType);
             box.appendChild(catewayState);
             box.appendChild(changeButton);
+            box.appendChild(deleteButton);
             listPart.appendChild(box);
         });
     } catch (err) {

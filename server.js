@@ -77,6 +77,20 @@ app.use((req, res, next) => {
     next();
 });
 
+app.delete('/cateway/delete/:id', auth, async (req, res) => {
+    const id = req.params.id;
+    try {
+        const deletedCateway = await Cateway.findByIdAndDelete(id);
+        if (!deletedCateway) {
+            return res.status(404).json({ message: 'Cateway not found' });
+        }
+        res.json({ message: 'Cateway deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting catway:', err);
+        res.status(500).json({ error: 'Unable to delete catway' });
+    }
+});
+
 app.put('/cateway/:id', auth, async (req, res) => {
     try {
         const id = req.params.id;
