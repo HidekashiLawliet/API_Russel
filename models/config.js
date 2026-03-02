@@ -9,7 +9,6 @@ async function connectToDatabase() {
     if (isConnected) {
         return;
     }
-
     if (!mongoUri) {
         throw new Error('Missing MongoDB URI. Set MONGODB_URI (or MONGO_URI) in .env');
     }

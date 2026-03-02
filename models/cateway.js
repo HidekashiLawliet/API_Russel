@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const CatawaySchema = new mongoose.Schema({
-    catewayNumber: String,
-    catewayType: String,
-    catewayState: String
+const CatwaySchema = new mongoose.Schema({
+    catwayNumber: Number,
+    catwayType: String,
+    catwayState: String
 }, { strict: false });
 
-module.exports = mongoose.model('catawayDB', CatawaySchema, 'catawayDB');
+module.exports = mongoose.model('catawayDB', CatwaySchema, 'catawayDB');
 
