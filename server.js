@@ -7,7 +7,7 @@ const app = express();
 const multer = require('multer');
 const mongoose = require('mongoose');
 const Cateway = require('./models/cateway');
-const UsersDB = require('./models/users')
+// const UsersDB = require('./models/users')
 const Reservation = require('./models/reservation');
 const FileSchema = new mongoose.Schema({
     filename: String,
@@ -192,13 +192,28 @@ app.get('/cateways', auth, async (req, res) => {
 
 app.get('/users', auth, async (req, res) => {
     try {
-        const items = await UsersDB.find({}).lean();
+        const items = await collection.find({}).lean();
         res.json(items);
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: 'Unable to load users' });
     }
 })
+
+app.delete('/users/:id/delete', auth, async (req, res) => {
+    const id = req.params.id;
+    try {
+        const deleteUsers = await collection.findByIdAndDelete(id);
+        if (!deleteUsers) {
+            return res.status(404).json({ message: 'Users not found' });
+        }
+        res.json({ message: 'User deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting user:', err);
+        res.status(500).json({ error: 'Unable to delete user' });
+    }
+})
+
 
 app.get('/catways/:id/reservations', auth, async (req, res) => {
     try {

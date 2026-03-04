@@ -19,7 +19,7 @@ async function connectToDatabase() {
 }
 
 // Create Schema
-const Loginschema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
     },
@@ -32,7 +32,7 @@ const Loginschema = new mongoose.Schema({
 });
 
 // collection part
-const collection = new mongoose.model("UserDB", Loginschema, "UserDB");
+const collection = new mongoose.model("UserDB", userSchema, "UserDB");
 
 module.exports = collection;
 module.exports.connectToDatabase = connectToDatabase;

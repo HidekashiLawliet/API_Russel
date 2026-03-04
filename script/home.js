@@ -1,5 +1,6 @@
-const listPart = document.getElementById('cateways-list');
+const catwayPart = document.getElementById('cateways-list');
 const reservationPart = document.getElementById('reservations-list');
+const usersPart = document.getElementById('users-list');
 
 function handleChange(selectedElemennt) {
     const val = selectedElemennt.value;
@@ -27,7 +28,6 @@ async function loadCateways() {
         const res = await fetch('/cateways');
         if (!res.ok) throw new Error('Network response was not ok');
         const items = await res.json();
-        listPart.innerHTML = ''; // clear existing
         items.forEach(item => {
             const box = document.createElement('div');
             box.className = "catewayBox"
@@ -94,12 +94,12 @@ async function loadCateways() {
             box.appendChild(catewayState);
             box.appendChild(changeButton);
             box.appendChild(deleteButton);
-            listPart.appendChild(box);
+            catwayPart.appendChild(box);
         });
 
     } catch (err) {
         console.error('Failed to load cateways', err);
-        listPart.textContent = 'Error loading data';
+        catwayPart.textContent = 'Error loading data';
     }
 }
 loadCateways();
@@ -119,17 +119,16 @@ async function loadUsers() {
     try {
         const res = await fetch('/users');
         const users = await res.json();
-        listPart.innerHTML = ''; // clear existing
         users.forEach(user => {
             const box = document.createElement('div');
             box.className = "userBox";
-            const id = user._id;
+            const userId = user._id;
             const name = document.createElement('p');
-            name.textContent = `User ID: ${id}:`;
-            const username = document.createElement('p');
-            username.textContent = `Username: ${user.username}`;
+            const id = document.createElement('p');
+            id.textContent = `id: ${userId}`;
+            name.textContent = `nom: ${user.name}`;
             const email = document.createElement('p');
-            email.textContent = `Email: ${user.email}`;
+            email.textContent = `email: ${user.mail}`;
 
             const changeButton = document.createElement('button');
             changeButton.textContent = 'Change User';
@@ -139,9 +138,8 @@ async function loadUsers() {
                 const updatedData = {
                     email: prompt('Enter new email:')
                 };
-
                 console.log('Updated data: ', updatedData)
-                fetch(`/user/${id}`, {
+                fetch(`/users`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -165,7 +163,7 @@ async function loadUsers() {
             deleteButton.addEventListener('click', async () => {
                 if (confirm("Are you sure you want to delete this user?")) {
                     try {
-                        const response = await fetch(`/user/delete/${id}`, {
+                        const response = await fetch(`/users/${userId}/delete`, {
                             method: 'DELETE'
                         });
                         if (!response.ok) {
@@ -179,16 +177,16 @@ async function loadUsers() {
             });
 
             box.appendChild(name);
-            box.appendChild(username);
             box.appendChild(email);
+            box.appendChild(id)
             box.appendChild(changeButton);
             box.appendChild(deleteButton);
-            listPart.appendChild(box);
+            usersPart.appendChild(box);
         });
 
     } catch (err) {
         console.error('Failed to load users', err);
-        listPart.textContent = 'Error loading data';
+        catwayPart.textContent = 'Error loading data';
     }
 }
 loadUsers();
