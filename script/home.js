@@ -5,12 +5,19 @@ function handleChange(selectedElemennt) {
     const val = selectedElemennt.value;
     const catewaysSection = document.getElementById('catewaysSection');
     const reservationsSection = document.getElementById('reservationsSection');
+    const userSection = document.getElementById('UsersSection')
     if (val === 'cateways') {
         catewaysSection.style.display = 'block';
         reservationsSection.style.display = 'none';
-    } else {
+        userSection.style.display = 'none'
+    } else if (val === 'reservations') {
         catewaysSection.style.display = 'none';
         reservationsSection.style.display = 'block';
+        userSection.style.display = 'none'
+    } else {
+        userSection.style.display = 'block'
+        catewaysSection.style.display = 'none';
+        reservationsSection.style.display = 'none';
     }
 }
 window.handleChange = handleChange; // exposer pour l'appel inline depuis le HTML
