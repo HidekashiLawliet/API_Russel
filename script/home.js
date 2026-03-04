@@ -60,7 +60,6 @@ async function loadCateways() {
                     .catch(error => {
                         console.error('Error updating cateway:', error);
                     });
-
             });
 
             const deleteButton = document.createElement('button');
@@ -99,28 +98,76 @@ async function loadCateways() {
 loadCateways();
 
 createNewCatway = () => {
-    const newCatewayData = {
-        catwayNumber: prompt('Enter catway number:'),
-        catwayType: prompt('Enter catway type:'),
-        catwayState: prompt('Enter catway state:')
-    };
-
-    fetch('/cateway/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newCatewayData)
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Cateway created successfully:', data);
-            location.reload();
-        })
-        .catch(error => {
-            console.error('Error creating catway:', error);
-        });
+    const form = document.getElementById('catwayForm');
+    if (form) form.style.display = 'block';
 };
+
+
+// ** reprendre la code a ici
+createNewReservation = () => {
+    const form = document.getElementById('reservationForm');
+    if (form) form.style.display = 'block';
+}
+
+// Form submit handlers (attach once)
+const catwayFormEl = document.getElementById('catwayForm');
+if (catwayFormEl) {
+    catwayFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            catwayNumber: e.target.catwayNumber.value,
+            catwayType: e.target.catwayType.value,
+            catwayState: e.target.catwayState.value
+        };
+        try {
+            const res = await fetch('/cateway/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            console.log('Cateway created successfully:', json);
+            catwayFormEl.reset();
+            catwayFormEl.style.display = 'none';
+            loadCateways();
+        } catch (err) {
+            console.error('Error creating catway:', err);
+        }
+    });
+    const catwayCancel = document.getElementById('catwayCancel');
+    if (catwayCancel) catwayCancel.addEventListener('click', () => { catwayFormEl.style.display = 'none'; });
+}
+
+const reservationFormEl = document.getElementById('reservationForm');
+if (reservationFormEl) {
+    reservationFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            catwayNumber: e.target.catwayNumber.value,
+            clientName: e.target.clientName.value,
+            boatName: e.target.boatName.value,
+            startDate: e.target.startDate.value,
+            endDate: e.target.endDate.value
+        };
+        try {
+            const res = await fetch('/reservations/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            console.log('Reservation created successfully:', json);
+            reservationFormEl.reset();
+            reservationFormEl.style.display = 'none';
+            loadReservations();
+        } catch (err) {
+            console.error('Error creating reservation:', err);
+        }
+    });
+    const reservationCancel = document.getElementById('reservationCancel');
+    if (reservationCancel) reservationCancel.addEventListener('click', () => { reservationFormEl.style.display = 'none'; });
+}
+// ** reprendre la code a ici
 
 
 async function loadReservations() {

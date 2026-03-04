@@ -165,6 +165,26 @@ app.post('/cateway/create', auth, async (req, res) => {
     }
 })
 
+
+
+// ** reprendre la code a ici
+app.post('/reservations/create', auth, async (req, res) => {
+    try {
+        console.log('received data:', req.body);
+        const createdReservation = await Reservation.create(req.body);
+        res.status(201).json(createdReservation);
+        res.redirect('/home');
+        if (!catway) {
+            return res.status(404).json({ error: 'Catway not found' });
+        }
+    } catch (err) {
+        console.error('Error creating reservation:', err);
+        res.status(500).json({ error: 'Unable to create reservation' });
+    }
+});
+// ** reprendre la code a ici
+
+
 app.get('/cateways', auth, async (req, res) => {
     try {
         const items = await Cateway.find({}).lean();
@@ -179,7 +199,6 @@ app.get('/cateways', auth, async (req, res) => {
 app.get('/catways/:id/reservations', auth, async (req, res) => {
     try {
         const catwayId = req.params.id;
-
         const catway = await Cateway.findById(catwayId);
         if (!catway) {
             return res.status(404).json({ error: 'Catway not found' });

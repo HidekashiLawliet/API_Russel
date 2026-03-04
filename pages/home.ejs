@@ -21,11 +21,33 @@
                 <h3>List of cateways</h3>
                 <div id="cateways-list"></div>
                 <button id="createCatwayButton" onclick="createNewCatway()">Create New Catway</button>
+                <form id="catwayForm" style="display:none; margin-top:10px;">
+                    <label>Number: <input name="catwayNumber"
+                            placeholder="Please enter the number of an existing catway" type="text" required></label>
+                    <label for="shortRadio">Short: </label>
+                    <input type="radio" id="shortRadio" name="fav_language" value="HTML">
+                    <label for="longRadio"> Long:</label>
+                    <input type="radio" id="longRadio" name="fav_language" value="CSS"><br>
+                    <label>State: <input name="catwayState" placeholder="Please enter the state of the catway"
+                            type="text"></label>
+                    <button type="submit">Create Catway</button>
+                    <button type="button" id="catwayCancel">Cancel</button>
+                </form>
             </section>
 
             <section id="reservationsSection" style="display:none;">
                 <h3>List of reservations</h3>
                 <div id="reservations-list"></div>
+                <button id="createReservationButton" onclick="createNewReservation()">Create New Reservation</button>
+                <form id="reservationForm" style="display:none; margin-top:10px;">
+                    <label>Catway Number: <input name="catwayNumber" type="text" required></label>
+                    <label>Client Name: <input name="clientName" type="text"></label>
+                    <label>Boat Name: <input name="boatName" type="text"></label>
+                    <label>Start Date: <input name="startDate" type="date"></label>
+                    <label>End Date: <input name="endDate" type="date"></label>
+                    <button type="submit">Create Reservation</button>
+                    <button type="button" id="reservationCancel">Cancel</button>
+                </form>
             </section>
 
             <form method="POST" action="/upload" enctype="multipart/form-data">
