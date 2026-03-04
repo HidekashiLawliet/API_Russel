@@ -15,6 +15,7 @@
             <select id="viewSelect" onchange="handleChange(this)">
                 <option value="cateways">Cateways</option>
                 <option value="reservations">Reservations</option>
+                <option value="UsersSection">Users</option>
             </select>
 
             <section id="catewaysSection">
@@ -22,20 +23,20 @@
                 <div id="cateways-list"></div>
                 <button id="createCatwayButton" onclick="createNewCatway()">Create New Catway</button>
                 <form id="catwayForm" style="display:none; margin-top:10px;">
-                    <label>Number: <input name="catwayNumber"
-                            placeholder="Please enter the number of an existing catway" type="text" required></label>
-                    <label for="shortRadio">Short: </label>
-                    <input type="radio" id="shortRadio" name="fav_language" value="HTML">
-                    <label for="longRadio"> Long:</label>
-                    <input type="radio" id="longRadio" name="fav_language" value="CSS"><br>
-                    <label>State: <input name="catwayState" placeholder="Please enter the state of the catway"
-                            type="text"></label>
+                    <label>Number: <input name="catwayNumber" placeholder="Enter catway number" type="text"
+                            required></label>
+                    <fieldset style="border: none;">
+                        <legend>Type:</legend>
+                        <label><input type="radio" name="catwayType" value="Short" required> Short</label>
+                        <label><input type="radio" name="catwayType" value="Long" required> Long</label>
+                    </fieldset>
+                    <label>State: <input name="catwayState" placeholder="Enter catway state" type="text"></label>
                     <button type="submit">Create Catway</button>
                     <button type="button" id="catwayCancel">Cancel</button>
                 </form>
             </section>
 
-            <section id="reservationsSection" style="display:none;">
+            <section id="reservationsSection">
                 <h3>List of reservations</h3>
                 <div id="reservations-list"></div>
                 <button id="createReservationButton" onclick="createNewReservation()">Create New Reservation</button>
@@ -49,7 +50,13 @@
                     <button type="button" id="reservationCancel">Cancel</button>
                 </form>
             </section>
-
+            <section id="UsersSection">
+                <h3>List of users</h3>
+                <div id="users-list">
+                    <p>test randomiokprekhgoip^rehgjiope^rvhireop^rf ipoêrhgf</p>
+                    <a href="/signup "><button id="createUserButton">Create New user </button></a>
+                </div>
+            </section>
             <form method="POST" action="/upload" enctype="multipart/form-data">
                 <div id="catways-list">
                     <div id="catways-box">

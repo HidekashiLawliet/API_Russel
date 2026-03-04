@@ -100,36 +100,131 @@ loadCateways();
 createNewCatway = () => {
     const form = document.getElementById('catwayForm');
     if (form) form.style.display = 'block';
+    loadCateways();
 };
 
-
-// ** reprendre la code a ici
 createNewReservation = () => {
     const form = document.getElementById('reservationForm');
     if (form) form.style.display = 'block';
 }
+
+async function loadUsers() {
+    try {
+        const res = await fetch('/users');
+        const users = await res.json();
+        listPart.innerHTML = ''; // clear existing
+        users.forEach(user => {
+            const box = document.createElement('div');
+            box.className = "userBox";
+            const id = user._id;
+            const name = document.createElement('p');
+            name.textContent = `User ID: ${id}:`;
+            const username = document.createElement('p');
+            username.textContent = `Username: ${user.username}`;
+            const email = document.createElement('p');
+            email.textContent = `Email: ${user.email}`;
+
+            const changeButton = document.createElement('button');
+            changeButton.textContent = 'Change User';
+            changeButton.className = "changeButton";
+            changeButton.addEventListener('click', () => {
+                console.log('Save changes for user ID:', id);
+                const updatedData = {
+                    email: prompt('Enter new email:')
+                };
+
+                console.log('Updated data: ', updatedData)
+                fetch(`/user/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Update successful:', data);
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error updating user:', error);
+                    });
+            });
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete User';
+            deleteButton.className = "deleteButton";
+            deleteButton.addEventListener('click', async () => {
+                if (confirm("Are you sure you want to delete this user?")) {
+                    try {
+                        const response = await fetch(`/user/delete/${id}`, {
+                            method: 'DELETE'
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to delete user');
+                        }
+                        location.reload();
+                    } catch (error) {
+                        console.error('Error deleting user:', error);
+                    }
+                }
+            });
+
+            box.appendChild(name);
+            box.appendChild(username);
+            box.appendChild(email);
+            box.appendChild(changeButton);
+            box.appendChild(deleteButton);
+            listPart.appendChild(box);
+        });
+
+    } catch (err) {
+        console.error('Failed to load users', err);
+        listPart.textContent = 'Error loading data';
+    }
+}
+loadUsers();
+
 
 // Form submit handlers (attach once)
 const catwayFormEl = document.getElementById('catwayForm');
 if (catwayFormEl) {
     catwayFormEl.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const selectedType = e.target.querySelector('input[name="catwayType"]:checked');
         const data = {
             catwayNumber: e.target.catwayNumber.value,
-            catwayType: e.target.catwayType.value,
+            catwayType: selectedType ? selectedType.value : '',
             catwayState: e.target.catwayState.value
         };
         try {
+            const existingNumber = await fetch('/cateways');
+            if (!existingNumber.ok) throw new Error('Failed to fetch cateways');
+            const existing = await existingNumber.json();
+            const exists = existing.some(input => String(input.catwayNumber) === String(data.catwayNumber));
+            if (exists) {
+                let errEl = catwayFormEl.querySelector('.catway-error');
+                if (!errEl) {
+                    errEl = document.createElement('div');
+                    errEl.className = 'catway-error';
+                    errEl.style.color = 'red';
+                    errEl.style.marginTop = '6px';
+                    catwayFormEl.appendChild(errEl);
+                }
+                errEl.textContent = 'this cateway number is already in use';
+                return;
+            }
             const res = await fetch('/cateway/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            const json = await res.json();
-            console.log('Cateway created successfully:', json);
+            const prevErr = catwayFormEl.querySelector('.catway-error');
+            if (prevErr) prevErr.textContent = '';
             catwayFormEl.reset();
             catwayFormEl.style.display = 'none';
-            loadCateways();
+            location.reload();
         } catch (err) {
             console.error('Error creating catway:', err);
         }
@@ -150,6 +245,25 @@ if (reservationFormEl) {
             endDate: e.target.endDate.value
         };
         try {
+            // verify catway exists
+            const catRes = await fetch('/cateways');
+            if (!catRes.ok) throw new Error('Failed to fetch cateways');
+            const cats = await catRes.json();
+            const valid = cats.some(c => String(c.catwayNumber) === String(data.catwayNumber));
+            if (!valid) {
+                let errEl = reservationFormEl.querySelector('.reservation-error');
+                if (!errEl) {
+                    errEl = document.createElement('div');
+                    errEl.className = 'reservation-error';
+                    errEl.style.color = 'red';
+                    errEl.style.marginTop = '6px';
+                    reservationFormEl.appendChild(errEl);
+                }
+                errEl.textContent = 'catway number does not exist';
+                return;
+            }
+            const prevErr = reservationFormEl.querySelector('.reservation-error');
+            if (prevErr) prevErr.textContent = '';
             const res = await fetch('/reservations/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -167,7 +281,6 @@ if (reservationFormEl) {
     const reservationCancel = document.getElementById('reservationCancel');
     if (reservationCancel) reservationCancel.addEventListener('click', () => { reservationFormEl.style.display = 'none'; });
 }
-// ** reprendre la code a ici
 
 
 async function loadReservations() {

@@ -22,11 +22,12 @@ async function connectToDatabase() {
 const Loginschema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+    },
+    mail: {
+        type: String,
     },
     password: {
         type: String,
-        required: true
     }
 });
 

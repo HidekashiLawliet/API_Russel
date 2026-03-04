@@ -7,8 +7,8 @@ const app = express();
 const multer = require('multer');
 const mongoose = require('mongoose');
 const Cateway = require('./models/cateway');
+const UsersDB = require('./models/users')
 const Reservation = require('./models/reservation');
-const { exit } = require("process");
 const FileSchema = new mongoose.Schema({
     filename: String,
     contentType: String,
@@ -165,9 +165,6 @@ app.post('/cateway/create', auth, async (req, res) => {
     }
 })
 
-
-
-// ** reprendre la code a ici
 app.post('/reservations/create', auth, async (req, res) => {
     try {
         console.log('received data:', req.body);
@@ -182,19 +179,26 @@ app.post('/reservations/create', auth, async (req, res) => {
         res.status(500).json({ error: 'Unable to create reservation' });
     }
 });
-// ** reprendre la code a ici
-
 
 app.get('/cateways', auth, async (req, res) => {
     try {
         const items = await Cateway.find({}).lean();
         res.json(items);
-    } catch (err) {
-        console.error('Error fetching cateways', err);
+    } catch (e) {
+        console.error(e);
         res.status(500).json({ error: 'Unable to load cateways' });
     }
 });
 
+app.get('/users', auth, async (req, res) => {
+    try {
+        const items = await UsersDB.find({}).lean();
+        res.json(items);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Unable to load users' });
+    }
+})
 
 app.get('/catways/:id/reservations', auth, async (req, res) => {
     try {
