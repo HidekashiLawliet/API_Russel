@@ -7,7 +7,6 @@ const app = express();
 const multer = require('multer');
 const mongoose = require('mongoose');
 const Cateway = require('./models/cateway');
-// const UsersDB = require('./models/users')
 const Reservation = require('./models/reservation');
 const FileSchema = new mongoose.Schema({
     filename: String,
@@ -40,7 +39,6 @@ app.get('/upload', (req, res) => {
     res.render("../pages/upload",);
 });
 
-
 app.post('/upload', upload.single('image'), async (req, res) => {
     try {
         const file = req.file;
@@ -67,9 +65,9 @@ function auth(req, res, next) {
     }
 }
 
-app.get('/home', auth, (req, res) => {
-    const username = req.cookies.username || '';
-    res.render("../pages/home", { username });
+app.get('/home/:id', auth, (req, res) => {
+    const id = req.cookies.id || '';
+    res.render("../pages/home", { id });
 });
 
 app.use((req, res, next) => {
@@ -236,12 +234,7 @@ app.put('/users/:id/change', auth, async (req, res) => {
 
 app.get('/catways/:id/reservations', auth, async (req, res) => {
     try {
-        const catwayId = req.params.id;
-        const catway = await Cateway.findById(catwayId);
-        if (!catway) {
-            return res.status(404).json({ error: 'Catway not found' });
-        }
-        const items = await Reservation.find({ catwayNumber: catway.catwayNumber }).lean();
+        const items = await Reservation.find({}).lean();
         res.json(items);
     } catch (err) {
         console.error('Error fetching reservations', err);
@@ -278,7 +271,8 @@ app.post("/login", async (req, res) => {
             return res.send("wrong Password");
         } else {
             res.cookie('username', check.name, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-            return res.redirect('/home');
+            res.cookie('id', check._id, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+            return res.redirect(`/home/${check._id}`);
         }
     }
     catch {
