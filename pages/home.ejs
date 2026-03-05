@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+    </head>
+    <body>
+        <h1 id="title">Welcome to Home Page</h1>
+        <button onclick="window.location.href='/logout'">Logout</button>
+        <h2>Welcome, chose your file to upload</h2>
+
+        <section>
+            <h3>Affichage</h3>
+            <select id="viewSelect" onchange="handleChange(this)">
+                <option value="cateways">Cateways</option>
+                <option value="reservations">Reservations</option>
+                <option value="UsersSection">Users</option>
+            </select>
+
+            <section id="catewaysSection">
+                <h3>List of cateways</h3>
+                <div id="cateways-list"></div>
+                <button id="createCatwayButton" onclick="createNewCatway()">Create New Catway</button>
+                <form id="catwayForm" style="display:none; margin-top:10px;">
+                    <label>Number: <input name="catwayNumber" placeholder="Enter catway number" type="text"
+                            required></label>
+                    <fieldset style="border: none;">
+                        <legend>Type:</legend>
+                        <label><input type="radio" name="catwayType" value="Short" required> Short</label>
+                        <label><input type="radio" name="catwayType" value="Long" required> Long</label>
+                    </fieldset>
+                    <label>State: <input name="catwayState" placeholder="Enter catway state" type="text"></label>
+                    <button type="submit">Create Catway</button>
+                    <button type="button" id="catwayCancel">Cancel</button>
+                </form>
+            </section>
+
+            <section id="reservationsSection">
+                <h3>List of reservations</h3>
+                <div id="reservations-list"></div>
+                <button id="createReservationButton" onclick="createNewReservation()">Create New Reservation</button>
+                <form id="reservationForm" style="display:none; margin-top:10px;">
+                    <label>Catway Number: <input name="catwayNumber" type="text" required></label>
+                    <label>Client Name: <input name="clientName" type="text"></label>
+                    <label>Boat Name: <input name="boatName" type="text"></label>
+                    <label>Start Date: <input name="startDate" type="date"></label>
+                    <label>End Date: <input name="endDate" type="date"></label>
+                    <button type="submit">Create Reservation</button>
+                    <button type="button" id="reservationCancel">Cancel</button>
+                </form>
+            </section>
+            <section id="UsersSection">
+                <h3>List of users</h3>
+                <div id="users-list"></div>
+                <a href="/signup "><button id="createUserButton">Create New user </button></a>
+            </section>
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+                <div id="catways-list">
+                    <div id="catways-box">
+                        <input type="file" name="image">
+                        <button type="submit">Upload</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <script src="../script/home.js" type="text/javascript" defer></script>
+    </body>
+</html>
