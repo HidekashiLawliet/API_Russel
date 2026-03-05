@@ -135,11 +135,9 @@ async function loadUsers() {
                 const form = document.createElement('form');
                 const emailInput = document.createElement('input');
                 emailInput.type = 'email';
-                emailInput.name = 'email';
                 emailInput.placeholder = 'Enter new email';
                 const nameInput = document.createElement('input');
                 nameInput.type = 'text';
-                nameInput.name = 'name';
                 nameInput.placeholder = 'Enter new name';
                 form.appendChild(emailInput);
                 form.appendChild(nameInput);
@@ -301,7 +299,6 @@ if (reservationFormEl) {
     if (reservationCancel) reservationCancel.addEventListener('click', () => { reservationFormEl.style.display = 'none'; });
 }
 
-
 async function loadReservations() {
     try {
         const cateways = await fetch('/cateways').then(r => r.json());
@@ -332,7 +329,6 @@ async function loadReservations() {
             const boatName = item.boatName;
             const startDate = item.startDate;
             const endDate = item.endDate;
-
             const title = document.createElement('p');
             title.textContent = `Reservation id: ${id}`;
             const reservationNum = document.createElement('p');
@@ -367,10 +363,18 @@ async function loadReservations() {
             changeButton.textContent = "change reservation";
             changeButton.className = "changeButton";
             changeButton.addEventListener('click', async () => {
-                const newClientName = prompt("Enter new client name:");
-                const newBoatName = prompt("Enter new boat name:");
-                const newStartDate = prompt("Enter new start date (YYYY-MM-DD):");
-                const newEndDate = prompt("Enter new end date (YYYY-MM-DD):");
+                const newClientName = document.createElement('input');
+                const newBoatName = document.createElement('input');
+                const newStartDate = document.createElement('input');
+                newStartDate.type = 'date'
+                const newEndDate = document.createElement('input');
+                newEndDate.type = 'date '
+                const changeResaFrom = document.createElement('form');
+                form.appendChild(newClientName);
+                form.appendChild(newBoatName);
+                form.appendChild(newStartDate);
+                form.appendChild(newEndDate);
+                // ** implementer l'apparition du form pour modifier les datas
                 if (newClientName !== null) {
                     try {
                         const response = await fetch(`/catway/${item.catwayNumber}/reservations/${item._id}`, {
