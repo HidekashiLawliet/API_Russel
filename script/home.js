@@ -1,7 +1,6 @@
 const catwayPart = document.getElementById('cateways-list');
 const reservationPart = document.getElementById('reservations-list');
 const usersPart = document.getElementById('users-list');
-
 function handleChange(selectedElemennt) {
     const val = selectedElemennt.value;
     const catewaysSection = document.getElementById('catewaysSection');
@@ -344,9 +343,6 @@ async function loadReservations() {
             start.textContent = `Start Date: ${startDate}`;
             const end = document.createElement('p');
             end.textContent = `End Date: ${endDate}`;
-
-
-
             const deleteButton = document.createElement('button');
             deleteButton.textContent = "delete reservation";
             deleteButton.className = "deleteButton";
@@ -368,20 +364,79 @@ async function loadReservations() {
             const changeButton = document.createElement('button');
             changeButton.textContent = "change reservation";
             changeButton.className = "changeButton";
-            changeButton.addEventListener('click', async () => {
+            changeButton.addEventListener('click', () => {
                 const form = document.createElement('form');
-                const emailInput = document.createElement('input');
-                emailInput.type = 'email';
-                emailInput.placeholder = 'Enter new email';
-                const nameInput = document.createElement('input');
-                nameInput.type = 'text';
-                nameInput.placeholder = 'Enter new name';
-                form.appendChild(emailInput);
-                form.appendChild(nameInput);
+                form.style.border = 'none';
+                const clientNameInput = document.createElement('input');
+                clientNameInput.type = 'text';
+                clientNameInput.placeholder = 'Client Name';
+                clientNameInput.value = clientName;
+                clientNameInput.required = true;
+                const boatNameInput = document.createElement('input');
+                boatNameInput.type = 'text';
+                boatNameInput.placeholder = 'Boat Name';
+                boatNameInput.value = boatName;
+                boatNameInput.required = true;
+                const startDateInput = document.createElement('input');
+                startDateInput.type = 'date';
+                startDateInput.value = startDate ? new Date(startDate).toISOString().split('T')[0] : '';
+                startDateInput.required = true;
+                const endDateInput = document.createElement('input');
+                endDateInput.type = 'date';
+                endDateInput.value = endDate ? new Date(endDate).toISOString().split('T')[0] : '';
+                endDateInput.required = true;
                 const submitButton = document.createElement('button');
                 submitButton.type = 'submit';
-                submitButton.textContent = 'Submit';
+                submitButton.textContent = 'Update Reservation';
+                const cancelButton = document.createElement('button');
+                cancelButton.type = 'button';
+                cancelButton.textContent = 'Cancel';
+                cancelButton.addEventListener('click', () => {
+                    form.remove();
+                });
+
+                form.appendChild(document.createTextNode('Client Name: '));
+                form.appendChild(clientNameInput);
+                form.appendChild(document.createTextNode('Boat Name: '));
+                form.appendChild(boatNameInput);
+                form.appendChild(document.createTextNode('Start Date: '));
+                form.appendChild(startDateInput);
+                form.appendChild(document.createTextNode('End Date: '));
+                form.appendChild(endDateInput);
                 form.appendChild(submitButton);
+                form.appendChild(cancelButton);
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const updatedData = {
+                        clientName: clientNameInput.value,
+                        boatName: boatNameInput.value,
+                        startDate: startDateInput.value,
+                        endDate: endDateInput.value
+                    };
+
+                    try {
+                        const response = await fetch(`/catway/${item.catwayNumber}/reservations/${item._id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedData)
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to update reservation');
+                        }
+                        const result = await response.json();
+                        console.log('Reservation updated:', result);
+                        form.remove();
+                        location.reload(); // Reload to show updated data
+                    } catch (error) {
+                        console.error('Error updating reservation:', error);
+                        alert('Error updating reservation');
+                    }
+                });
+
+                box.appendChild(form);
             });
 
             box.appendChild(reservationNum);

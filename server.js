@@ -282,7 +282,7 @@ app.post("/login", async (req, res) => {
 
 // Déconnexion
 app.get('/logout', (req, res) => {
-    res.clearCookie('username');
+    res.clearCookie('id');
     res.redirect('/');
 });
 const port = 8080;
