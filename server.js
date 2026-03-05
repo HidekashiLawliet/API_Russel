@@ -135,25 +135,7 @@ app.delete('/catway/:catwayNumber/reservations/:reservationId', auth, async (req
     }
 });
 
-app.put('/cateway/:id', auth, async (req, res) => {
-    try {
-        const id = req.params.id;
-        const updateData = req.body;
-        if (updateData.catwayState === undefined || updateData.catwayState === "" || updateData.catwayState === null) {
-            return res.status(400).json({ error: 'catwayState is required' });
-        }
-        const updatedCateway = await Cateway.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
-        console.log('Updated Cateway:', updatedCateway);
-        if (!updatedCateway) {
-            return res.status(404).json({ message: 'Not found' });
-        }
-        res.json(updatedCateway);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Unable to update' });
-    }
 
-});
 
 app.post('/cateway/create', auth, async (req, res) => {
     try {
@@ -214,6 +196,43 @@ app.delete('/users/:id/delete', auth, async (req, res) => {
     }
 })
 
+app.put('/cateway/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const updateData = req.body;
+        if (updateData.catwayState === undefined || updateData.catwayState === "" || updateData.catwayState === null) {
+            return res.status(400).json({ error: 'catwayState is required' });
+        }
+        const updatedCateway = await Cateway.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
+        console.log('Updated Cateway:', updatedCateway);
+        if (!updatedCateway) {
+            return res.status(404).json({ message: 'Not found' });
+        }
+        res.json(updatedCateway);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Unable to update' });
+    }
+});
+
+app.put('/users/:id/change', auth, async (req, res) => {
+    try {
+        const id = req.body.id;
+        const newName = req.body.name;
+        const newMail = req.body.mail;
+        const newData = req.body;
+        const oldData = await collection.findByIdAndUpdate(id, newData, { returnDocument: 'after' });
+        console.log('new data:', newData);
+        if (!newData) {
+            return res.status(404).json({ message: 'Not foudn' });
+        }
+        res.json(newData)
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Unable to update' });
+    }
+
+})
 
 app.get('/catways/:id/reservations', auth, async (req, res) => {
     try {

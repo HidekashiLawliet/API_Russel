@@ -124,37 +124,53 @@ async function loadUsers() {
             box.className = "userBox";
             const userId = user._id;
             const name = document.createElement('p');
-            const id = document.createElement('p');
-            id.textContent = `id: ${userId}`;
             name.textContent = `nom: ${user.name}`;
             const email = document.createElement('p');
             email.textContent = `email: ${user.mail}`;
-
             const changeButton = document.createElement('button');
             changeButton.textContent = 'Change User';
             changeButton.className = "changeButton";
             changeButton.addEventListener('click', () => {
-                console.log('Save changes for user ID:', id);
-                const updatedData = {
-                    email: prompt('Enter new email:')
-                };
-                console.log('Updated data: ', updatedData)
-                fetch(`/users`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updatedData)
-
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Update successful:', data);
-                        location.reload();
+                console.log('Save changes for user ID:', userId);
+                const form = document.createElement('form');
+                const emailInput = document.createElement('input');
+                emailInput.type = 'email';
+                emailInput.name = 'email';
+                emailInput.placeholder = 'Enter new email';
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.name = 'name';
+                nameInput.placeholder = 'Enter new name';
+                form.appendChild(emailInput);
+                form.appendChild(nameInput);
+                const submitButton = document.createElement('button');
+                submitButton.type = 'submit';
+                submitButton.textContent = 'Submit';
+                form.appendChild(submitButton);
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const updatedData = {
+                        id: userId,
+                        mail: emailInput.value,
+                        name: nameInput.value
+                    };
+                    fetch(`/users/${userId}/change`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedData)
                     })
-                    .catch(error => {
-                        console.error('Error updating user:', error);
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+                document.body.appendChild(form);
             });
 
             const deleteButton = document.createElement('button');
@@ -178,7 +194,6 @@ async function loadUsers() {
 
             box.appendChild(name);
             box.appendChild(email);
-            box.appendChild(id)
             box.appendChild(changeButton);
             box.appendChild(deleteButton);
             usersPart.appendChild(box);
@@ -192,7 +207,6 @@ async function loadUsers() {
 loadUsers();
 
 
-// Form submit handlers (attach once)
 const catwayFormEl = document.getElementById('catwayForm');
 if (catwayFormEl) {
     catwayFormEl.addEventListener('submit', async (e) => {
